@@ -7,4 +7,4 @@ A simple app to manage users.
 - Docker
 
 ## Start the application
-- docker compose up --build
+- docker compose up --build zdfssdf
