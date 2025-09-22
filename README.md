@@ -1,5 +1,7 @@
 A simple app to manage users.
 
+## Version 0.1
+
 ## Prerequisite 
 - Java 21
 - Node.js 22.x + npm
