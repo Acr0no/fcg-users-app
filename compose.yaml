@@ -1,23 +1,52 @@
 services:
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - app-net
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: appusersdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d appusersdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - app-net
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "4200:4200"
-    # Hot-reload
     volumes:
       - ./frontend:/usr/src/app
-      # Maintain node_modules into container
       - /usr/src/app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -31,3 +60,6 @@ services:
 
 networks:
   app-net:
+
+volumes:
+  db-data:
