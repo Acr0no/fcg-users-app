@@ -1,0 +1,97 @@
+<div class="container-fluid position-relative">
+  <!--mat badge-->
+  @if (isUserAdded) {
+    <div class="border border-success rounded p-2 bg-success-subtle text-success position-absolute top-0 custom-badge">
+      Nuovo utente aggiunto
+    </div>
+  }
+  @if (isUserEdited) {
+    <div class="border border-success rounded p-2 bg-success-subtle text-success position-absolute top-0 custom-badge">
+      Utente modificato con successo
+    </div>
+  }
+  <div class="container">
+    <div class="row my-3">
+      <div class="col-5 d-flex align-items-center">
+        <form [formGroup]="filters">
+          <mat-form-field appearance="outline" class="me-3">
+            <mat-label>Nome</mat-label>
+            <input matInput placeholder="Cerca per nome" formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cognome</mat-label>
+            <input matInput placeholder="Cerca per cognome" formControlName="surname">
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="col-7 d-flex justify-content-end align-items-center">
+        <button mat-raised-button color="primary" class="me-2" (click)="addUser()">Aggiungi utente</button>
+        <input
+          #fileInput
+          type="file"
+          accept=".csv,text/csv"
+          style="display:none"
+          (change)="handleFileChange($event)"
+        />
+        <button mat-raised-button color="primary" (click)="openFilePicker(fileInput)">Importa csv</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2 mb-3" style="width:100%">
+            <!-- ID -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+            </ng-container>
+            <!-- Name -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+            <!-- Surname -->
+            <ng-container matColumnDef="surname">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Cognome</th>
+              <td mat-cell *matCellDef="let row">{{ row.surname }}</td>
+            </ng-container>
+            <!-- Email -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+              <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+            </ng-container>
+            <!-- Address -->
+            <ng-container matColumnDef="address">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Indirizzo</th>
+              <td mat-cell *matCellDef="let row">{{ row.address }}</td>
+            </ng-container>
+            <!--action-->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let row">
+                <mat-icon (click)="editUser(row)">edit</mat-icon>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+                Nessun dato trovato
+              </td>
+            </tr>
+          </table>
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="50"
+            [pageSizeOptions]="[5,10,25,50]"
+            showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

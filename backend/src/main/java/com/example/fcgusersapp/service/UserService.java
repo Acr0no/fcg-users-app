@@ -4,7 +4,6 @@ import com.example.fcgusersapp.entity.User;
 import com.example.fcgusersapp.exceptions.CsvImportException;
 import com.example.fcgusersapp.repository.UserRepository;
 import com.example.fcgusersapp.utils.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
-@Slf4j
 public class UserService {
     private final UserRepository userRepository;
 
@@ -31,6 +29,10 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
     @Transactional
     public User editUser(User user, Long id) {
         User userToEdit = userRepository.findById(id)
@@ -40,10 +42,6 @@ public class UserService {
         userToEdit.setSurname(user.getSurname());
         userToEdit.setAddress(user.getAddress());
         return userRepository.save(userToEdit);
-    }
-
-    public Page<User> findAllUsers(Pageable pageable) {
-        return this.userRepository.findAll(pageable);
     }
 
     @Transactional
@@ -73,11 +71,7 @@ public class UserService {
                 if (cols.length < 4) {
                     throw new CsvImportException("Errore nel formato del file CSV");
                 }
-                User userToSave = new User();
-                userToSave.setEmail(cols[0].trim()); //email
-                userToSave.setName(cols[1].trim()); //nome
-                userToSave.setSurname(cols[2].trim()); //cognome
-                userToSave.setAddress(cols[3].trim()); //indirizzo
+                User userToSave = User.builder().email(cols[0].trim()).name(cols[1].trim()).surname(cols[2].trim()).address(cols[3].trim()).build();
                 try {
                     userRepository.save(userToSave);
                     usersInserted++;
@@ -96,5 +90,11 @@ public class UserService {
 
     private InputStreamReader getFileInputStream(MultipartFile file) throws IOException {
         return new InputStreamReader(file.getInputStream());
+    }
+
+    public Page<User> searchUsers(String name, String surname, Pageable pageable) {
+        String nameToSearch = name == null ? "" : name;
+        String surnameToSearch = surname == null ? "" : surname;
+        return userRepository.findByNameContainingIgnoreCaseAndSurnameContainingIgnoreCase(nameToSearch, surnameToSearch, pageable);
     }
 }

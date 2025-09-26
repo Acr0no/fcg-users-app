@@ -9,4 +9,12 @@ A simple app to manage users.
 - Docker
 
 ## Start the application
-- docker compose up --build zdfssdf
+- docker compose up --build 
+
+## Database
+
+- Postgresql
+- Server db
+- credenziali db: admin/admin
+- database name: appusersdb
+- table: users

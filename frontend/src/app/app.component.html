@@ -1,16 +1,10 @@
-TEST
-<!--<form [formGroup]="filters" class="filters">
-  <mat-form-field>
-    <mat-label>Nome</mat-label>
-    <input matInput formControlName="name">
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Cognome</mat-label>
-    <input matInput formControlName="surname">
-  </mat-form-field>
-</form>
-
-<table mat-table [dataSource]="dataSource" matSort>
-</table>
-<mat-paginator [pageSize]="25"></mat-paginator>-->
+<router-outlet></router-outlet>
+<!--ngx-spinner-->
+<ngx-spinner
+  size="medium"
+  [bdColor]="spinnerBgColor"
+  [color]="spinnerColor"
+  [fullScreen]="true"
+  type="ball-clip-rotate-pulse"
+  name="dashboard">
+</ngx-spinner>
