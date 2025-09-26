@@ -24,7 +24,9 @@ A simple app to manage users.
 - docker compose up frontend
 
 ## Database ##
-- Postgresql
+- url: http://localhost:8081/
+- driver Postgresql
+- server: db
 - credentials for DB: admin/admin
 - database name: appusersdb
 - table: users
