@@ -8,8 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * perform the search by name and surname ignoring case with pagination
-     *
+     * Perform the search by name and surname ignoring case with pagination
      */
     Page<User> findByNameContainingIgnoreCaseAndSurnameContainingIgnoreCase(String name, String surname, Pageable pageable);
 }

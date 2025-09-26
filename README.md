@@ -1,20 +1,30 @@
 A simple app to manage users.
 
-## Version 0.1
+## Prerequisite
 
-## Prerequisite 
 - Java 21
 - Node.js 22.x + npm
+- Angular 18.2.0
 - Maven 3.9
 - Docker
 
-## Start the application
-- docker compose up --build 
+## Command to start the entire application
 
-## Database
+- docker compose build
+- docker compose up
 
+## Start only the BE
+
+- docker compose build backend
+- docker compose up backend
+
+## Start only the FE
+
+- docker compose build frontend
+- docker compose up frontend
+
+## Database ##
 - Postgresql
-- Server db
-- credenziali db: admin/admin
+- credentials for DB: admin/admin
 - database name: appusersdb
 - table: users

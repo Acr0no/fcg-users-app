@@ -8,6 +8,7 @@ import {AppConstants} from './constants/app-constants';
 })
 export class AppComponent {
 
+  //spinner background color and color
   spinnerBgColor : string = AppConstants.spinnerBgColor;
   spinnerColor : string = AppConstants.spinnerColor;
 }

@@ -1,5 +1,4 @@
-create extension if not exists pgcrypto;
-
+-- Create the "users" table if it does not already exist.
 create table if not exists public.users
 (
     id         bigserial primary key,
@@ -11,6 +10,7 @@ create table if not exists public.users
     updated_at timestamptz    not null default now()
 );
 
+-- Updater trigger function: sets "updated_at" to NOW() before every UPDATE.
 create or replace function set_updated_at()
     returns trigger
     language plpgsql as
@@ -22,6 +22,8 @@ end;
 $$;
 
 drop trigger if exists trg_users_updated_at on public.users;
+
+-- trigger before update for each row of "public.users", then execute "set_updated_at" function.
 create trigger trg_users_updated_at
     before update
     on public.users

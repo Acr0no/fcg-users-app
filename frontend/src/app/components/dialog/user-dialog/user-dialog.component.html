@@ -1,43 +1,52 @@
 <div class="container-fluid">
   <div class="container">
-    <h2 mat-dialog-title>Nuovo utente</h2>
-    <form [formGroup]="fields" (ngSubmit)="submit()" mat-dialog-content>
-      <mat-form-field class="w-100" appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email">
-        <mat-error *ngIf="fields.get('email')?.hasError('required')">Obbligatoria</mat-error>
-        <mat-error *ngIf="fields.get('email')?.hasError('email')">Email non valida</mat-error>
-      </mat-form-field>
 
-      <div class="d-flex gap-3">
-        <mat-form-field class="flex-fill" appearance="outline">
-          <mat-label>Nome</mat-label>
-          <input matInput formControlName="name">
-          <mat-error *ngIf="fields.get('name')?.hasError('required')">Obbligatorio</mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="flex-fill" appearance="outline">
-          <mat-label>Cognome</mat-label>
-          <input matInput formControlName="surname">
-          <mat-error *ngIf="fields.get('surname')?.hasError('required')">Obbligatorio</mat-error>
-        </mat-form-field>
-      </div>
-
-      <mat-form-field class="w-100" appearance="outline">
-        <mat-label>Indirizzo</mat-label>
-        <input matInput formControlName="address">
-      </mat-form-field>
-      <!--error messages-->
-      @if (hasErrorMsg) {
-        <div class="alert alert-danger p-2 mb-1">
-          <h3 class="mb-0">{{ errorMsg }}</h3>
-        </div>
-      }
-      <div mat-dialog-actions class="d-flex justify-content-end gap-2">
+    @if (isDelete) {
+      <h2 mat-dialog-title>Cancellare utente "{{userName}} {{userSurname}}" ?</h2>
+      <div mat-dialog-actions class="d-flex justify-content-start">
         <button type="button" mat-stroked-button (click)="cancel()">Annulla</button>
-        <button type="submit" mat-raised-button color="primary">Salva</button>
+        <button type="button" mat-raised-button color="primary" (click)="deleteUser(this.data.user.id)">Cancella</button>
       </div>
-    </form>
+    } @else {
+      <h2 mat-dialog-title>Nuovo utente</h2>
+      <form [formGroup]="fields" (ngSubmit)="submit()" mat-dialog-content>
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+          <mat-error *ngIf="fields.get('email')?.hasError('required')">Obbligatoria</mat-error>
+          <mat-error *ngIf="fields.get('email')?.hasError('email')">Email non valida</mat-error>
+        </mat-form-field>
+
+        <div class="d-flex gap-3">
+          <mat-form-field class="flex-fill" appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name">
+            <mat-error *ngIf="fields.get('name')?.hasError('required')">Obbligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="flex-fill" appearance="outline">
+            <mat-label>Cognome</mat-label>
+            <input matInput formControlName="surname">
+            <mat-error *ngIf="fields.get('surname')?.hasError('required')">Obbligatorio</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Indirizzo</mat-label>
+          <input matInput formControlName="address">
+        </mat-form-field>
+        <!--error messages-->
+        @if (hasErrorMsg) {
+          <div class="alert alert-danger p-2 mb-1">
+            <h3 class="mb-0">{{ errorMsg }}</h3>
+          </div>
+        }
+        <div mat-dialog-actions class="d-flex justify-content-end">
+          <button type="button" mat-stroked-button (click)="cancel()">Annulla</button>
+          <button type="submit" mat-raised-button color="primary">Salva</button>
+        </div>
+      </form>
+    }
   </div>
 </div>
 

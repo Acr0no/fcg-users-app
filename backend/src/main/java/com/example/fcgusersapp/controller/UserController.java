@@ -17,8 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
-import java.util.Optional;
 
+/**
+ * REST controller exposing CRUD and CSV-import endpoints for {@link User} resources.
+ * All endpoints are rooted at {@link Endpoint#USERS_ENDPOINT_ROOT} and allow CORS
+ * from {@link Endpoint#CORS_URL_FE}.
+ */
 @CrossOrigin(origins = Endpoint.CORS_URL_FE)
 @RestController
 @RequestMapping(Endpoint.USERS_ENDPOINT_ROOT)
@@ -26,10 +30,19 @@ public class UserController {
 
     private final UserService userService;
 
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param user the user payload to persist
+     * @return {@code 200 OK} with a success {@link ApiResponse} containing the created user;
+     * {@code 409 Conflict} with an error {@link ApiResponse} if a unique constraint (email) is violated
+     * or a generic error occurs.
+     */
     @PostMapping(Endpoint.ADD_USER)
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         try {
@@ -44,6 +57,15 @@ public class UserController {
         }
     }
 
+    /**
+     * Updates an existing user identified by ID.
+     *
+     * @param user the new data to apply to the user
+     * @param id   the ID of the user to update
+     * @return {@code 200 OK} with a success {@link ApiResponse} containing the updated user;
+     * {@code 409 Conflict} with an error {@link ApiResponse} if the email is already used
+     * or the provided arguments are invalid.
+     */
     @PutMapping(Endpoint.FIND_OR_UPDATE_USER)
     public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable("id") Long id) {
         try {
@@ -57,6 +79,13 @@ public class UserController {
 
     }
 
+    /**
+     * Retrieves a user by ID.
+     *
+     * @param id the user ID
+     * @return {@code 200 OK} with the {@link User} if found
+     * @throws ResponseStatusException {@code 404 NOT FOUND} if no user exists with the given ID
+     */
     @GetMapping(Endpoint.FIND_OR_UPDATE_USER)
     public ResponseEntity<User> findUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id)
@@ -64,6 +93,14 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
+    /**
+     * Searches users with optional filters and pagination.
+     *
+     * @param pageable Spring Data paging/sorting information. Defaults to page size 50, sorted by {@code id} DESC.
+     * @param name     optional filter to match (part of) the user's first name; may be {@code null}
+     * @param surname  optional filter to match (part of) the user's last name; may be {@code null}
+     * @return a {@link Page} of users matching the criteria
+     */
     @GetMapping(Endpoint.GET_USERS)
     public Page<User> findAllUsers(
             @PageableDefault(size = 50, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
@@ -73,6 +110,14 @@ public class UserController {
         return userService.searchUsers(name, surname, pageable);
     }
 
+    /**
+     * Deletes a user by ID.
+     *
+     * @param id the ID of the user to delete
+     * @return {@code 200 OK} with a success {@link ApiResponse} if deletion succeeds;
+     * {@code 404 NOT FOUND} with an error {@link ApiResponse} if the user does not exist
+     * or the input is invalid.
+     */
     @DeleteMapping(Endpoint.DELETE_USER)
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         try {
@@ -85,6 +130,14 @@ public class UserController {
         }
     }
 
+    /**
+     * Imports users from a CSV file.
+     *
+     * @param file the uploaded CSV file (multipart/form-data) containing user records
+     * @return {@code 200 OK} with an import report map (e.g., counts, errors);
+     * {@code 400 BAD REQUEST} with an error {@link ApiResponse} if the CSV is invalid;
+     * {@code 500 INTERNAL SERVER ERROR} with an error {@link ApiResponse} for unexpected failures.
+     */
     @PostMapping(path = Endpoint.UPLOAD_USER_CSV, consumes = "multipart/form-data")
     public ResponseEntity<?> uploadUsersCsv(@RequestPart("file") MultipartFile file) {
         try {
