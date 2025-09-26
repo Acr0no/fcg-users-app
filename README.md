@@ -13,16 +13,6 @@ A simple app to manage users.
 - docker compose build
 - docker compose up
 
-## Start only the BE
-
-- docker compose build backend
-- docker compose up backend
-
-## Start only the FE
-
-- docker compose build frontend
-- docker compose up frontend
-
 ## Database ##
 - url: http://localhost:8081/
 - driver Postgresql
